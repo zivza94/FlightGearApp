@@ -22,7 +22,7 @@ namespace ClientSide
             }
             catch (Exception e)
             {
-                throw e;
+                throw new Exception("couldn't connect with server");
             }
         }
 
@@ -35,7 +35,7 @@ namespace ClientSide
             }
             catch (Exception e)
             {
-                throw e;
+                throw new Exception("couldn't disconnect with server");
             }
 
         }

@@ -1,5 +1,7 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
+using FlightGearApp.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -14,18 +16,29 @@ namespace FlightGearApp.Controllers
         public ScreenshotController(IConfiguration conf,IHttpClientFactory clientFactory)
         {
             _client = clientFactory.CreateClient("screenshot");
-            _url = conf.GetValue<string>("Connections:Http:Url");
-            _url += "/screenshot";
+            _client.Timeout = TimeSpan.FromSeconds(10);
+            string ip = conf.GetValue<string>("Host");
+            string port = conf.GetValue<string>("Connections:Http:port");
+            _url = "http://"+ip+":"+port+"/screenshot";
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetScreenshot()
+        public async Task<ActionResult<IResult>> GetScreenshot()
         {
             //request from simulator the screenshot
-            HttpResponseMessage response = await _client.GetAsync(_url);
+            HttpResponseMessage response;
+            try
+            {
+                 response = await _client.GetAsync(_url);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ServerErrorResult("couldn't get the screen shot from the simulator"));
+            }
+            
             if (!response.IsSuccessStatusCode)
             {
-                return BadRequest("couldn't get the screen shot from the simulator");
+                return BadRequest(new ServerErrorResult("couldn't get the screen shot from the simulator"));
             }
             var content = response.Content;
             //read the response

@@ -38,34 +38,47 @@ namespace FlightGearApp
         {
             if (!_client.Connected)
             {
-                string ip = _configuration.GetValue<string>("Connections:Tcp:Ip");
+                string ip = _configuration.GetValue<string>("Host");
                 int port = _configuration.GetValue<int>("Connections:Tcp:Port");
-                _client.Connect(ip, port);
-                _client.Write("data\n");
+                try
+                {
+                    _client.Connect(ip, port);
+                    _client.Write("data\n");
+                }catch(Exception e) { }
             }
             foreach (AsyncCommand asyncCommand in _queue.GetConsumingEnumerable())
             {
                 IResult res;
+                string recv;
+                //try to write and read
                 try
                 {
                     _client.Write(GetSendCommand(asyncCommand));
-                    string recv = _client.Read();
-                     
-                     if (!ValidOperation(recv, asyncCommand.Command))
-                     {
-                         res = new ServerErrorResult("server didn't update");
-                     }
-                     else
-                     {
-                         res = new OkResult("Successfully sent command");
-                     }
+                    recv = _client.Read();
                 }
-                catch(Exception ex)
+                //timeout
+                catch (TimeoutException ex)
                 {
                     res = new ServerErrorResult(ex.Message);
+                    asyncCommand.Completion.SetResult(res);
+                    continue;
                 }
-                
-                
+                //another error
+                catch
+                {
+                    res = new ServerErrorResult("couldn't communicate with Flight Gear Simulator");
+                    asyncCommand.Completion.SetResult(res);
+                    continue;
+                }
+                //valid that send success
+                if (!ValidOperation(recv, asyncCommand.Command))
+                {
+                    res = new ServerErrorResult("server didn't update");
+                }
+                else
+                {
+                    res = new OkResult("Successfully sent command");
+                }
                 asyncCommand.Completion.SetResult(res);
 
             }
