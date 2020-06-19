@@ -36,20 +36,19 @@ namespace FlightGearApp
 
         public void ProccessCommands()
         {
-            if (!_client.Connected)
-            {
-                string ip = _configuration.GetValue<string>("Host");
-                int port = _configuration.GetValue<int>("Connections:Tcp:Port");
-                try
-                {
-                    _client.Connect(ip, port);
-                    _client.Write("data\n");
-                }catch(Exception e) { }
-            }
+            string ip = _configuration.GetValue<string>("Host");
+            int port = _configuration.GetValue<int>("Connections:Tcp:Port");
+            ConnectTcpConnection(ip, port);
             foreach (AsyncCommand asyncCommand in _queue.GetConsumingEnumerable())
             {
                 IResult res;
                 string recv;
+                if (!ConnectTcpConnection(ip, port))
+                {
+                    res = new ServerErrorResult("couldn't connect to simulator");
+                    asyncCommand.Completion.SetResult(res);
+                    continue;
+                }
                 //try to write and read
                 try
                 {
@@ -82,6 +81,24 @@ namespace FlightGearApp
                 asyncCommand.Completion.SetResult(res);
 
             }
+        }
+
+        public bool ConnectTcpConnection(string ip, int port)
+        {
+            if (!_client.Connected)
+            {
+                try
+                {
+                    _client.Connect(ip, port);
+                    _client.Write("data\n");
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public string GetSendCommand(AsyncCommand asyncCommand)

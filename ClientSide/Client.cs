@@ -13,14 +13,13 @@ namespace ClientSide
         { 
             try 
             { 
-                ClientSide.Client client = new ClientSide.Client(); 
                 _client = new TcpClient(ip, port);
                 _ns = _client.GetStream();
                 _ns.ReadTimeout = 10000;
                 _ns.WriteTimeout = 10000;
                 Connected = true;
             }
-            catch (Exception e)
+            catch
             {
                 throw new Exception("couldn't connect with server");
             }
@@ -32,10 +31,13 @@ namespace ClientSide
             { 
                 _ns.Close();
                 _client.Close();
+                Connected = false;
             }
-            catch (Exception e)
+            catch
             {
+                Connected = false;
                 throw new Exception("couldn't disconnect with server");
+                
             }
 
         }
@@ -49,17 +51,13 @@ namespace ClientSide
             { 
                 bytesRead = _ns.Read(bytes, 0, bytes.Length);
             }
-            catch (TimeoutException e) 
-            {
-                throw e;
-            }
             catch (Exception e)
             {
                 if (e.Message.Contains("time"))
                 {
                     throw new TimeoutException(e.Message);
                 }
-                throw e;
+                throw;
             }
 
             if (bytesRead == 0)
@@ -84,7 +82,7 @@ namespace ClientSide
                 {
                     throw new TimeoutException(e.Message);
                 } 
-                throw e;
+                throw;
             }
         }
     }

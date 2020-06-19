@@ -31,7 +31,7 @@ namespace FlightGearApp.Controllers
             {
                  response = await _client.GetAsync(_url);
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest(new ServerErrorResult("couldn't get the screen shot from the simulator"));
             }
