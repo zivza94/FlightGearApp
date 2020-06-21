@@ -26,7 +26,8 @@ namespace FlightGearApp
             services.AddControllers();
             services.AddRouting();
             //add client singelton
-            services.AddSingleton(typeof(FlightGearClient), typeof(FlightGearClient));
+            services.AddSingleton(typeof(FlightGearClient),
+                typeof(FlightGearClient));
 
             services.AddHttpClient("screenshot", client =>
                 client.DefaultRequestHeaders.Add("Accept", "application/json"));

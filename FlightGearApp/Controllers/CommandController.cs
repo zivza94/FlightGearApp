@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FlightGearApp.Results;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +23,6 @@ namespace FlightGearApp.Controllers
                 return BadRequest(new InvalidResult(valid));
             }
             IResult res = await _client.Execute(controllers);
-            Console.WriteLine(res + "\n " + controllers.ToString());
             return Ok(res);
         }
     }

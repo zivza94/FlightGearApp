@@ -65,7 +65,8 @@ namespace FlightGearApp
                 //another error
                 catch
                 {
-                    res = new ServerErrorResult("couldn't communicate with Flight Gear Simulator");
+                    res = new ServerErrorResult(
+                        "couldn't communicate with Flight Gear Simulator");
                     asyncCommand.Completion.SetResult(res);
                     continue;
                 }

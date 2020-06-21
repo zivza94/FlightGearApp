@@ -35,29 +35,34 @@ namespace FlightGearApp
             KeyValuePair<double, double> bound = _valuesBoundry["Rudder"];
             if (!Utiles.Between(bound.Key, bound.Value, Rudder))
             {
-                return "Invalid Rudder, actual: "+Rudder+" expected: "+ bound.Key+" to "+bound.Value;
+                return "Invalid Rudder, actual: "
+                       +Rudder+" expected: "+ bound.Key+" to "+bound.Value;
             }
             bound = _valuesBoundry["Elevator"];
             if (!Utiles.Between(bound.Key, bound.Value, Elevator))
             {
-                return "Invalid Elevator, actual: " + Elevator + " expected: " + bound.Key + " to " + bound.Value;
+                return "Invalid Elevator, actual: "
+                       + Elevator + " expected: " + bound.Key + " to " + bound.Value;
             }
             bound = _valuesBoundry["Aileron"];
             if (!Utiles.Between(bound.Key, bound.Value, Aileron))
             {
-                return "Invalid Aileron, actual: " + Aileron + " expected: " + bound.Key + " to " + bound.Value;
+                return "Invalid Aileron, actual: " 
+                       + Aileron + " expected: " + bound.Key + " to " + bound.Value;
             }
             bound = _valuesBoundry["Throttle"];
             if (!Utiles.Between(bound.Key, bound.Value, Throttle))
             {
-                return "Invalid Throttle, actual: " + Throttle + " expected: " + bound.Key + " to " + bound.Value;
+                return "Invalid Throttle, actual: " 
+                       + Throttle + " expected: " + bound.Key + " to " + bound.Value;
             }
             return "OK";
         }
 
-        public string ToString()
+        public override string ToString()
         {
-            return " rudder: " + Rudder + " aileron:" + Aileron + " elevator: " + Elevator + " throttle: " + Throttle +
+            return " rudder: " + Rudder + " aileron:" + Aileron + 
+                   " elevator: " + Elevator + " throttle: " + Throttle +
                    "\n";
         }
     }
