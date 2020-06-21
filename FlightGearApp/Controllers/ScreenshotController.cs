@@ -23,7 +23,7 @@ namespace FlightGearApp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IResult>> GetScreenshot()
+        public async Task<ActionResult> GetScreenshot()
         {
             //request from simulator the screenshot
             HttpResponseMessage response;
@@ -33,12 +33,13 @@ namespace FlightGearApp.Controllers
             }
             catch
             {
-                return BadRequest(new ServerErrorResult("couldn't get the screen shot from the simulator"));
+
+                return BadRequest("couldn't get the screen shot from the simulator");
             }
             
             if (!response.IsSuccessStatusCode)
             {
-                return BadRequest(new ServerErrorResult("couldn't get the screen shot from the simulator"));
+                return BadRequest("couldn't get the screen shot from the simulator");
             }
             var content = response.Content;
             //read the response

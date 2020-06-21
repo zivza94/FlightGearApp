@@ -54,5 +54,11 @@ namespace FlightGearApp
             }
             return "OK";
         }
+
+        public string ToString()
+        {
+            return " rudder: " + Rudder + " aileron:" + Aileron + " elevator: " + Elevator + " throttle: " + Throttle +
+                   "\n";
+        }
     }
 }

@@ -1,8 +1,12 @@
-﻿namespace FlightGearApp.Results
+﻿using System.Text.Json.Serialization;
+
+namespace FlightGearApp.Results
 {
     public class OkResult : IResult
     {
+        [JsonPropertyName("result_type")]
         public string ResultType { get; set; }
+        [JsonPropertyName("message")]
         public string Message { get; set; }
 
         public OkResult(string msg)
